@@ -28,10 +28,17 @@ function ProjectsPage() {
   }, [currentPage]);
 
   const saveProject = (project: Project) => {
-    let updatedProjects = projects.map((p: Project) => {
-      return p.id === project.id ? project : p;
-    });
-    setProjects(updatedProjects);
+    projectAPI
+      .put(project)
+      .then((updatedProject) => {
+        let updatedProjects = projects.map((p: Project) => {
+          return p.id === project.id ? project : p;
+        });
+        setProjects(updatedProjects);
+      })
+      .catch((e) => {
+        setError(e.message);
+      });
   };
 
   const handleMoreClick = () => {
