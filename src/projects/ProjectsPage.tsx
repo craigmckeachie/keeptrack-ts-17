@@ -9,22 +9,43 @@ function ProjectsPage() {
   const [error, setError] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Approach 1: using promise then
+  // useEffect(() => {
+  //   setLoading(true);
+  //   projectAPI
+  //     .get(currentPage)
+  //     .then((data) => {
+  //       setLoading(false);
+  //       if (currentPage === 1) {
+  //         setProjects(data);
+  //       } else {
+  //         setProjects((projects) => [...projects, ...data]);
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       setLoading(false);
+  //       setError(e.message);
+  //     });
+  // }, [currentPage]);
+
+  // Approach 2: using async/await
   useEffect(() => {
-    setLoading(true);
-    projectAPI
-      .get(currentPage)
-      .then((data) => {
-        setLoading(false);
+    async function loadProjects() {
+      setLoading(true);
+      try {
+        const data = await projectAPI.get(currentPage);
         if (currentPage === 1) {
           setProjects(data);
         } else {
           setProjects((projects) => [...projects, ...data]);
         }
-      })
-      .catch((e) => {
-        setLoading(false);
+      } catch (e) {
         setError(e.message);
-      });
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProjects();
   }, [currentPage]);
 
   const saveProject = (project: Project) => {
