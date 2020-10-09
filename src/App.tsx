@@ -8,6 +8,7 @@ import {
 
 import './App.css';
 import HomePage from './home/HomePage';
+import ProjectPage from './projects/ProjectPage';
 import ProjectsPage from './projects/ProjectsPage';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={HomePage} />
           <Route path="/projects" exact component={ProjectsPage} />
+          <Route path="/projects/:id" component={ProjectPage} />
         </Switch>
       </div>
     </Router>
