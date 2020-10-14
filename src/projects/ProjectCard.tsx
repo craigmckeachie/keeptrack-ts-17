@@ -30,7 +30,7 @@ function ProjectCard(props: ProjectCardProps) {
           <p>Budget : {project.budget.toLocaleString()}</p>
         </Link>
         <button
-          name="edit"
+          aria-label={`edit ${project.name}`}
           className=" bordered"
           onClick={() => {
             handleEditClick(project);
