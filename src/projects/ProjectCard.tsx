@@ -30,6 +30,7 @@ function ProjectCard(props: ProjectCardProps) {
           <p>Budget : {project.budget.toLocaleString()}</p>
         </Link>
         <button
+          name="edit"
           className=" bordered"
           onClick={() => {
             handleEditClick(project);
