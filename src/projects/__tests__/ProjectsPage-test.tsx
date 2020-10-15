@@ -16,15 +16,16 @@ import { url as projectsUrl } from '../projectAPI';
 
 // declare which API requests to mock
 const server = setupServer(
-  // capture "GET http://localhost:3000/projects?_page=1" requests
+  // capture "GET http://localhost:3000/projects" requests
   rest.get(projectsUrl, (req, res, ctx) => {
     // respond using a mocked JSON body
-    const page = Number(req.url.searchParams.get('_page'));
-    if (page === 1) {
-      return res(ctx.json(MOCK_PROJECTS));
-    } else {
-      return res(ctx.json(getMore_MOCK_PROJECTS));
-    }
+    return res(ctx.json(MOCK_PROJECTS));
+    // const page = Number(req.url.searchParams.get('_page'));
+    // if (page === 1) {
+    //   return res(ctx.json(MOCK_PROJECTS));
+    // } else {
+    //   return res(ctx.json(getMore_MOCK_PROJECTS));
+    // }
   })
 );
 
