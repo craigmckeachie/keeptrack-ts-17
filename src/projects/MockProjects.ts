@@ -1,3 +1,4 @@
+import { pid } from 'process';
 import { Project } from './Project';
 
 export const MOCK_PROJECTS = [
@@ -68,3 +69,10 @@ export const MOCK_PROJECTS = [
     isActive: false,
   }),
 ];
+
+// export function getMore_MOCK_PROJECTS() {
+//   return MOCK_PROJECTS.map((p) => {
+//     p.id = p.id ? p.id + 1000 : p.id;
+//     return p;
+//   });
+// }
