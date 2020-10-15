@@ -12,7 +12,6 @@ import {
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { url as projectsUrl } from '../projectAPI';
-// import userEvent from '@testing-library/user-event';
 
 // declare which API requests to mock
 const server = setupServer(
@@ -20,12 +19,6 @@ const server = setupServer(
   rest.get(projectsUrl, (req, res, ctx) => {
     // respond using a mocked JSON body
     return res(ctx.json(MOCK_PROJECTS));
-    // const page = Number(req.url.searchParams.get('_page'));
-    // if (page === 1) {
-    //   return res(ctx.json(MOCK_PROJECTS));
-    // } else {
-    //   return res(ctx.json(getMore_MOCK_PROJECTS));
-    // }
   })
 );
 
@@ -67,16 +60,6 @@ describe('<ProjectsPage />', () => {
       await screen.findByRole('button', { name: /more/i })
     ).toBeInTheDocument();
   });
-
-  // test('should display more records after clicking more', async () => {
-  //   renderComponent();
-  //   const moreButton = await screen.findByRole('button', { name: /more/i });
-  //   const numberOfRecords = (await screen.findAllByRole('img')).length;
-  //   await userEvent.click(moreButton);
-  //   const updatedNumberOfRecords = await (await screen.findAllByRole('img'))
-  //     .length;
-  //   // console.log(numberOfRecords, updatedNumberOfRecords);
-  // });
 
   test('should display more button with get', async () => {
     renderComponent();
