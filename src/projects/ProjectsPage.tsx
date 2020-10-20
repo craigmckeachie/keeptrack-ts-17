@@ -1,32 +1,71 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Project } from './Project';
 import { projectAPI } from './projectAPI';
 import ProjectList from './ProjectList';
 
+type ProjectState = {
+  projects: Project[];
+  loading: boolean;
+  error: string | undefined;
+  currentPage: number;
+};
+
+type ActionType =
+  | { type: 'setLoading'; payload: boolean }
+  | { type: 'setProjects'; payload: Project[] }
+  | { type: 'setError'; payload: string };
+
+function projectsReducer(
+  state: ProjectState,
+  action: ActionType
+): ProjectState {
+  switch (action.type) {
+    case 'setLoading':
+      return { ...state, loading: action.payload };
+    case 'setProjects':
+      return { ...state, projects: action.payload };
+    case 'setError':
+      return { ...state, error: action.payload };
+    default:
+      break;
+  }
+  return state;
+}
+
 function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(undefined);
+  // const [projects, setProjects] = useState<Project[]>([]);
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
+  const [{ projects, loading, error }, dispatch] = useReducer(
+    projectsReducer,
+    {
+      projects: [],
+      loading: false,
+      error: undefined,
+      currentPage: 1,
+    }
+    // ,(state: ProjectState) => state
+  );
 
   useEffect(() => {
     async function loadProjects() {
-      setLoading(true);
+      dispatch({ type: 'setLoading', payload: true });
       try {
         const data = await projectAPI.get(currentPage);
         if (currentPage === 1) {
-          setProjects(data);
+          dispatch({ type: 'setProjects', payload: data });
         } else {
-          setProjects((projects) => [...projects, ...data]);
+          dispatch({ type: 'setProjects', payload: [...projects, ...data] });
         }
       } catch (e) {
-        setError(e.message);
+        dispatch({ type: 'setError', payload: e.message });
       } finally {
-        setLoading(false);
+        dispatch({ type: 'setLoading', payload: false });
       }
     }
     loadProjects();
-  }, [currentPage]);
+  }, [currentPage, projects]);
 
   const saveProject = (project: Project) => {
     projectAPI
@@ -35,15 +74,15 @@ function ProjectsPage() {
         let updatedProjects = projects.map((p: Project) => {
           return p.id === project.id ? project : p;
         });
-        setProjects(updatedProjects);
+        dispatch({ type: 'setProjects', payload: updatedProjects });
       })
       .catch((e) => {
-        setError(e.message);
+        dispatch({ type: 'setError', payload: e.message });
       });
   };
 
   const handleMoreClick = () => {
-    setCurrentPage((currentPage) => currentPage + 1);
+    setCurrentPage((currentPage: number) => currentPage + 1);
   };
 
   return (
