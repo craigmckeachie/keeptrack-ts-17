@@ -3,26 +3,42 @@ import { Project } from './Project';
 import { projectAPI } from './projectAPI';
 import ProjectList from './ProjectList';
 
+//action types
+export const LOAD_PROJECTS_REQUEST = 'LOAD_PROJECTS_REQUEST';
+export const LOAD_PROJECTS_SUCCESS = 'LOAD_PROJECTS_SUCCESS';
+export const LOAD_PROJECTS_FAILURE = 'LOAD_PROJECTS_FAILURE';
+export const SAVE_PROJECT_REQUEST = 'SAVE_PROJECT_REQUEST';
+export const SAVE_PROJECT_SUCCESS = 'SAVE_PROJECT_SUCCESS';
+export const SAVE_PROJECT_FAILURE = 'SAVE_PROJECT_FAILURE';
+
+type ProjectActionTypes =
+  | { type: typeof LOAD_PROJECTS_REQUEST }
+  | {
+      type: typeof LOAD_PROJECTS_SUCCESS;
+      payload: { projects: Project[]; page: number };
+    }
+  | { type: typeof LOAD_PROJECTS_FAILURE; payload: { message: string } }
+  | { type: typeof SAVE_PROJECT_REQUEST }
+  | {
+      type: typeof SAVE_PROJECT_SUCCESS;
+      payload: Project;
+    }
+  | { type: typeof SAVE_PROJECT_FAILURE; payload: { message: string } };
+
 type ProjectState = {
   projects: Project[];
   loading: boolean;
   error: string | undefined;
 };
 
-type ActionType =
-  | { type: 'setLoading'; payload: boolean }
-  | { type: 'setProjects'; payload: { projects: Project[]; page: number } }
-  | { type: 'setUpdatedProject'; payload: { project: Project } }
-  | { type: 'setError'; payload: string };
-
 function projectsReducer(
   state: ProjectState,
-  action: ActionType
+  action: ProjectActionTypes
 ): ProjectState {
   switch (action.type) {
-    case 'setLoading':
-      return { ...state, loading: action.payload };
-    case 'setProjects':
+    case LOAD_PROJECTS_REQUEST:
+      return { ...state, loading: true, error: '' };
+    case LOAD_PROJECTS_SUCCESS:
       let projects: Project[];
       const { page } = action.payload;
       if (page === 1) {
@@ -36,18 +52,29 @@ function projectsReducer(
         projects,
         error: '',
       };
+    case LOAD_PROJECTS_FAILURE:
+      return { ...state, loading: false, error: action.payload.message };
+    case SAVE_PROJECT_REQUEST:
+      return { ...state };
+    case SAVE_PROJECT_SUCCESS:
+      if (action.payload.isNew) {
+        return {
+          ...state,
+          projects: [...state.projects, action.payload],
+        };
+      } else {
+        return {
+          ...state,
+          projects: state.projects.map((project: Project) => {
+            return project.id === action.payload.id
+              ? Object.assign({}, project, action.payload)
+              : project;
+          }),
+        };
+      }
 
-    case 'setError':
-      return { ...state, error: action.payload };
-    case 'setUpdatedProject':
-      const { project } = action.payload;
-      let updatedProjects = state.projects.map((p: Project) => {
-        return p.id === project.id ? project : p;
-      });
-      return {
-        ...state,
-        projects: updatedProjects,
-      };
+    case SAVE_PROJECT_FAILURE:
+      return { ...state, error: action.payload.message };
     default:
       return state;
   }
@@ -63,17 +90,18 @@ function ProjectsPage() {
 
   useEffect(() => {
     async function loadProjects(page: number) {
-      dispatch({ type: 'setLoading', payload: true });
+      dispatch({ type: LOAD_PROJECTS_REQUEST });
       try {
         const data = await projectAPI.get(page);
         dispatch({
-          type: 'setProjects',
+          type: LOAD_PROJECTS_SUCCESS,
           payload: { projects: data, page: page },
         });
       } catch (e) {
-        dispatch({ type: 'setError', payload: e.message });
-      } finally {
-        dispatch({ type: 'setLoading', payload: false });
+        dispatch({
+          type: LOAD_PROJECTS_FAILURE,
+          payload: { message: e.message },
+        });
       }
     }
     loadProjects(currentPage);
@@ -84,17 +112,20 @@ function ProjectsPage() {
       .put(project)
       .then((updatedProject) => {
         dispatch({
-          type: 'setUpdatedProject',
-          payload: { project: updatedProject },
+          type: SAVE_PROJECT_SUCCESS,
+          payload: updatedProject,
         });
       })
       .catch((e) => {
-        dispatch({ type: 'setError', payload: e.message });
+        dispatch({
+          type: SAVE_PROJECT_FAILURE,
+          payload: { message: e.message },
+        });
       });
   };
 
   const handleMoreClick = () => {
-    setCurrentPage(currentPage + 1);
+    setCurrentPage((previousPage) => previousPage + 1);
   };
 
   return (
