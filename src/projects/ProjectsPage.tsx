@@ -7,12 +7,12 @@ type ProjectState = {
   projects: Project[];
   loading: boolean;
   error: string | undefined;
-  currentPage: number;
 };
 
 type ActionType =
   | { type: 'setLoading'; payload: boolean }
-  | { type: 'setProjects'; payload: Project[] }
+  | { type: 'setProjects'; payload: { projects: Project[]; page: number } }
+  | { type: 'setUpdatedProject'; payload: { project: Project } }
   | { type: 'setError'; payload: string };
 
 function projectsReducer(
@@ -23,58 +23,70 @@ function projectsReducer(
     case 'setLoading':
       return { ...state, loading: action.payload };
     case 'setProjects':
-      return { ...state, projects: action.payload };
+      let projects: Project[];
+      const { page } = action.payload;
+      if (page === 1) {
+        projects = action.payload.projects;
+      } else {
+        projects = [...state.projects, ...action.payload.projects];
+      }
+      return {
+        ...state,
+        loading: false,
+        projects,
+        error: '',
+      };
+
     case 'setError':
       return { ...state, error: action.payload };
+    case 'setUpdatedProject':
+      const { project } = action.payload;
+      let updatedProjects = state.projects.map((p: Project) => {
+        return p.id === project.id ? project : p;
+      });
+      return {
+        ...state,
+        projects: updatedProjects,
+      };
     default:
-      break;
+      return state;
   }
-  return state;
 }
 
 function ProjectsPage() {
-  // const [projects, setProjects] = useState<Project[]>([]);
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
-  const [{ projects, loading, error }, dispatch] = useReducer(
-    projectsReducer,
-    {
-      projects: [],
-      loading: false,
-      error: undefined,
-      currentPage: 1,
-    }
-    // ,(state: ProjectState) => state
-  );
+  const [{ projects, loading, error }, dispatch] = useReducer(projectsReducer, {
+    projects: [],
+    loading: false,
+    error: undefined,
+  });
 
   useEffect(() => {
-    async function loadProjects() {
+    async function loadProjects(page: number) {
       dispatch({ type: 'setLoading', payload: true });
       try {
-        const data = await projectAPI.get(currentPage);
-        if (currentPage === 1) {
-          dispatch({ type: 'setProjects', payload: data });
-        } else {
-          dispatch({ type: 'setProjects', payload: [...projects, ...data] });
-        }
+        const data = await projectAPI.get(page);
+        dispatch({
+          type: 'setProjects',
+          payload: { projects: data, page: page },
+        });
       } catch (e) {
         dispatch({ type: 'setError', payload: e.message });
       } finally {
         dispatch({ type: 'setLoading', payload: false });
       }
     }
-    loadProjects();
-  }, [currentPage, projects]);
+    loadProjects(currentPage);
+  }, [currentPage]);
 
   const saveProject = (project: Project) => {
     projectAPI
       .put(project)
       .then((updatedProject) => {
-        let updatedProjects = projects.map((p: Project) => {
-          return p.id === project.id ? project : p;
+        dispatch({
+          type: 'setUpdatedProject',
+          payload: { project: updatedProject },
         });
-        dispatch({ type: 'setProjects', payload: updatedProjects });
       })
       .catch((e) => {
         dispatch({ type: 'setError', payload: e.message });
@@ -82,7 +94,7 @@ function ProjectsPage() {
   };
 
   const handleMoreClick = () => {
-    setCurrentPage((currentPage: number) => currentPage + 1);
+    setCurrentPage(currentPage + 1);
   };
 
   return (
