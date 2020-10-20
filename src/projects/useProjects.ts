@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { Project } from './Project';
 import { projectAPI } from './projectAPI';
 import {
@@ -21,26 +21,6 @@ function useProjects() {
       page: 1,
     }
   );
-
-  //   async function fetch(page: number) {
-  //     dispatch({ type: LOAD_PROJECTS_REQUEST, payload: { page: page } });
-  //     try {
-  //       const data = await projectAPI.get(page);
-  //       dispatch({
-  //         type: LOAD_PROJECTS_SUCCESS,
-  //         payload: { projects: data, page: page },
-  //       });
-  //     } catch (e) {
-  //       dispatch({
-  //         type: LOAD_PROJECTS_FAILURE,
-  //         payload: { message: e.message },
-  //       });
-  //     }
-  //   }
-
-  //   function loadProjects(page: number) {
-  //     fetch(page);
-  //   }
 
   useEffect(() => {
     async function loadProjects(page: number) {
@@ -67,25 +47,6 @@ function useProjects() {
       payload: { page: nextPage },
     });
   }
-
-  //   const loadProjects = useCallback(
-  //     async (page) => {
-  //       dispatch({ type: LOAD_PROJECTS_REQUEST });
-  //       try {
-  //         const data = await projectAPI.get(page);
-  //         dispatch({
-  //           type: LOAD_PROJECTS_SUCCESS,
-  //           payload: { projects: data, page: 1 },
-  //         });
-  //       } catch (e) {
-  //         dispatch({
-  //           type: LOAD_PROJECTS_FAILURE,
-  //           payload: { message: e.message },
-  //         });
-  //       }
-  //     },
-  //     [page]
-  //   );
 
   const saveProject = (project: Project) => {
     projectAPI
