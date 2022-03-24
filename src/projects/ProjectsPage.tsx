@@ -1,44 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Project } from './Project';
-import { projectAPI } from './projectAPI';
 import { useProjects } from './projectHooks';
 import ProjectList from './ProjectList';
 
 function ProjectsPage() {
-  const {
-    projects,
-    loading,
-    error,
-    setCurrentPage,
-    saveProject,
-    saving,
-    savingError,
-  } = useProjects();
+  const { data, isLoading, error, isFetching, page, setPage, isPreviousData } =
+    useProjects();
 
   const handleMoreClick = () => {
-    setCurrentPage((currentPage) => currentPage + 1);
+    setPage((currentPage) => currentPage + 1);
   };
 
-  return (
-    <>
-      <h1>Projects</h1>
-
-      {(error || savingError) && (
-        <div className="row">
-          <div className="card large error">
-            <section>
-              <p>
-                <span className="icon-alert inverse "></span>
-                {error} {savingError}
-              </p>
-            </section>
-          </div>
-        </div>
-      )}
-
-      <ProjectList projects={projects} onSave={saveProject} />
-
-      {!loading && !error && (
+  if (data) {
+    return (
+      <>
+        <h1>Projects</h1>
+        <ProjectList projects={data} />
         <div className="row">
           <div className="col-sm-12">
             <div className="button-group fluid">
@@ -48,16 +24,41 @@ function ProjectsPage() {
             </div>
           </div>
         </div>
-      )}
+      </>
+    );
+  }
 
-      {loading && (
+  if (isLoading) {
+    return (
+      <>
+        <h1>Projects</h1>
         <div className="center-page">
           <span className="spinner primary"></span>
           <p>Loading...</p>
         </div>
-      )}
-    </>
-  );
+      </>
+    );
+  }
+
+  if (error instanceof Error) {
+    return (
+      <>
+        <h1>Projects</h1>
+        <div className="row">
+          <div className="card large error">
+            <section>
+              <p>
+                <span className="icon-alert inverse "></span>
+                {error.message}
+              </p>
+            </section>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return null;
 }
 
 export default ProjectsPage;
