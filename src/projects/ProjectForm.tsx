@@ -1,27 +1,25 @@
 import React, { SyntheticEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Project } from './Project';
+import { saveProject } from './state/projectActions';
 
 interface ProjectFormProps {
   project: Project;
-  onSave: (project: Project) => void;
   onCancel: () => void;
 }
 
-function ProjectForm({
-  project: initialProject,
-  onSave,
-  onCancel,
-}: ProjectFormProps) {
+function ProjectForm({ project: initialProject, onCancel }: ProjectFormProps) {
   const [project, setProject] = useState(initialProject);
   const [errors, setErrors] = useState({
     name: '',
     description: '',
     budget: '',
   });
+  const dispatch = useDispatch();
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     if (!isValid()) return;
-    onSave(project);
+    dispatch(saveProject(project));
   };
 
   const handleChange = (event: any) => {
