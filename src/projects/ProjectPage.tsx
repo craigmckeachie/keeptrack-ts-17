@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { projectAPI } from './projectAPI';
 import ProjectDetail from './ProjectDetail';
 import { Project } from './Project';
-import { RouteComponentProps } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-interface ProjectPageProps extends RouteComponentProps<{ id: string }> {}
-
-function ProjectPage(props: ProjectPageProps) {
+function ProjectPage(props: any) {
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState<Project | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const id = Number(props.match.params.id);
+  const params = useParams();
+  const id = Number(params.id);
 
   useEffect(() => {
     setLoading(true);
