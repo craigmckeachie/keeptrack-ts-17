@@ -9,7 +9,7 @@ export function useProjects() {
     keepPreviousData: true,
     // staleTime: 5000,
   });
-  console.log(queryInfo);
+  // console.log(queryInfo);
   return { ...queryInfo, page, setPage };
 }
 
