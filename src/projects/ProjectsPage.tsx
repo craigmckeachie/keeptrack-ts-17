@@ -3,47 +3,45 @@ import { useProjects } from './projectHooks';
 import ProjectList from './ProjectList';
 
 function ProjectsPage() {
-  const { data, isLoading, error, isFetching, page, setPage, isPreviousData } =
-    useProjects();
+  const {
+    data,
+    isLoading,
+    error,
+    isError,
+    isFetching,
+    page,
+    setPage,
+    isPreviousData,
+  } = useProjects();
 
   const handleMoreClick = () => {
     setPage((currentPage) => currentPage + 1);
   };
 
-  if (data) {
-    return (
-      <>
-        <h1>Projects</h1>
-        <ProjectList projects={data} />
-        <div className="row">
-          <div className="col-sm-12">
-            <div className="button-group fluid">
-              <button className="button default" onClick={handleMoreClick}>
-                More...
-              </button>
+  return (
+    <>
+      <h1>Projects</h1>
+
+      {data ? (
+        <>
+          {isFetching && <span className="toast">Refreshing...</span>}
+          <ProjectList projects={data} />
+          <div className="row">
+            <div className="col-sm-12">
+              <div className="button-group fluid">
+                <button className="button default" onClick={handleMoreClick}>
+                  More...
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <>
-        <h1>Projects</h1>
+        </>
+      ) : isLoading ? (
         <div className="center-page">
           <span className="spinner primary"></span>
           <p>Loading...</p>
         </div>
-      </>
-    );
-  }
-
-  if (error instanceof Error) {
-    return (
-      <>
-        <h1>Projects</h1>
+      ) : isError && error instanceof Error ? (
         <div className="row">
           <div className="card large error">
             <section>
@@ -54,11 +52,72 @@ function ProjectsPage() {
             </section>
           </div>
         </div>
-      </>
-    );
-  }
+      ) : null}
+    </>
+  );
 
-  return null;
+  // if (data) {
+  //   return (
+  //     <>
+  //       <h1>Projects</h1>
+  //       <ProjectList projects={data} />
+  //       <div className="row">
+  //         <div className="col-sm-12">
+  //           <div className="button-group fluid">
+  //             <button className="button default" onClick={handleMoreClick}>
+  //               More...
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // }
+
+  // if (isLoading) {
+  //   return (
+  //     <>
+  //       <h1>Projects</h1>
+  //       <div className="center-page">
+  //         <span className="spinner primary"></span>
+  //         <p>Loading...</p>
+  //       </div>
+  //     </>
+  //   );
+  // }
+
+  // if (error instanceof Error) {
+  //   return (
+  //     <>
+  //       <h1>Projects</h1>
+  //       <div className="row">
+  //         <div className="card large error">
+  //           <section>
+  //             <p>
+  //               <span className="icon-alert inverse "></span>
+  //               {error.message}
+  //             </p>
+  //           </section>
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // }
+
+  // return null;
 }
 
 export default ProjectsPage;
+
+// return (
+//   <>
+//     <h1>Header</h1>
+//     {data ? (
+//       <p>data</p>
+//     ) : isLoading ? (
+//       <p>Loading...</p>
+//     ) : isError ? (
+//       <p>Error Message</p>
+//     ) : null}
+//   </>
+// );
