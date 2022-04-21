@@ -1,4 +1,5 @@
 import { Project } from './Project';
+import ProjectsPage from './ProjectsPage';
 
 const baseUrl = 'http://localhost:4000';
 const url = `${baseUrl}/projects`;
@@ -41,11 +42,17 @@ function delay(ms: number) {
   };
 }
 
+function convertToProjectModels(data: any[]): Project[] {
+  let projects: Project[] = data.map((item: any) => new Project(item));
+  return projects;
+}
+
 const projectAPI = {
   get(page = 1, limit = 20) {
     return fetch(`${url}?_page=${page}&_limit=${limit}&_sort=name`)
       .then(checkStatus)
       .then(parseJSON)
+      .then(convertToProjectModels)
       .catch((error: TypeError) => {
         console.log('log client error ' + error);
         throw new Error(
