@@ -1,27 +1,27 @@
 {
-  "name": "keeptrack",
+  "name": "my-app-ts",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "~4.2.4",
-    "@testing-library/react": "~9.5.0",
-    "@testing-library/user-event": "~7.2.1",
-    "@types/jest": "~24.9.1",
-    "@types/node": "~12.12.62",
-    "@types/react": "~16.9.51",
-    "@types/react-dom": "~16.9.8",
-    "@types/react-router-dom": "~5.1.6",
-    "json-server": "~0.16.2",
-    "mini.css": "~3.0.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-redux": "~7.2.1",
-    "react-router-dom": "~5.2.0",
-    "react-scripts": "3.4.3",
-    "redux": "~4.0.5",
-    "redux-devtools-extension": "~2.13.8",
-    "redux-thunk": "~2.3.0",
-    "typescript": "~3.7.5"
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.1.1",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^16.11.27",
+    "@types/react": "^18.0.6",
+    "@types/react-dom": "^18.0.2",
+    "json-server": "^0.17.0",
+    "mini.css": "^3.0.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-redux": "^8.0.1",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
+    "redux": "^4.2.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.1",
+    "typescript": "^4.6.3",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,7 +31,10 @@
     "api": "json-server api/db.json --port 4000"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
@@ -44,8 +47,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/react-redux": "~7.1.9"
   }
 }
