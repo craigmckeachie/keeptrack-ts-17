@@ -22,7 +22,7 @@ function ProjectForm({ project: initialProject, onCancel }: ProjectFormProps) {
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     if (!isValid()) return;
-    dispatch(saveProject(project));
+    dispatch<any>(saveProject(project));
   };
 
   const handleChange = (event: any) => {
