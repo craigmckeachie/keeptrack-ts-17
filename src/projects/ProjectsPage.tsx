@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { AppState } from '../state';
 import ProjectList from './ProjectList';
 import { loadProjects } from './state/projectActions';
@@ -20,11 +21,11 @@ function ProjectsPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadProjects(1));
+    dispatch<any>(loadProjects(1));
   }, [dispatch]);
 
   const handleMoreClick = () => {
-    dispatch(loadProjects(currentPage + 1));
+    dispatch<any>(loadProjects(currentPage + 1));
   };
 
   return (

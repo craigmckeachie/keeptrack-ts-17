@@ -16,10 +16,9 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
             </h3>
             <p>{project.description}</p>
             <p>Budget : {project.budget}</p>
-            <p>Signed: {project.contractSignedOn}</p>
+            <p>Signed: {project.contractSignedOn.toLocaleString()}</p>
             <p>
               <mark className="active">
-                {' '}
                 {project.isActive ? 'active' : 'inactive'}
               </mark>
             </p>
