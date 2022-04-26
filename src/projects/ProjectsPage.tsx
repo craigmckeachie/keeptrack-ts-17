@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../state';
-import { Project } from './Project';
-import { projectAPI } from './projectAPI';
 import ProjectList from './ProjectList';
 import { loadProjects } from './state/projectActions';
 
@@ -22,7 +20,7 @@ function ProjectsPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadProjects(1));
+    dispatch<any>(loadProjects(1));
   }, [dispatch]);
 
   const handleMoreClick = () => {
