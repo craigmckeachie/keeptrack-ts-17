@@ -51,6 +51,7 @@
     "@testing-library/dom": "^8.13.0",
     "@testing-library/user-event": "^14.1.1",
     "@types/react-test-renderer": "^18.0.0",
+    "msw": "^0.39.2",
     "react-test-renderer": "^18.0.0"
   }
 }
