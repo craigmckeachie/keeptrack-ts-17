@@ -9,6 +9,14 @@ import renderer from 'react-test-renderer';
 describe('<ProjectCard />', () => {
   let project: Project;
   let handleEdit: jest.Mock;
+
+  const setup = () =>
+    render(
+      <MemoryRouter>
+        <ProjectCard project={project} onEdit={handleEdit} />
+      </MemoryRouter>
+    );
+
   beforeEach(() => {
     project = new Project({
       id: 1,
@@ -20,19 +28,11 @@ describe('<ProjectCard />', () => {
   });
 
   it('should initially render', () => {
-    render(
-      <MemoryRouter>
-        <ProjectCard project={project} onEdit={handleEdit} />
-      </MemoryRouter>
-    );
+    setup();
   });
 
   it('renders project properly', () => {
-    render(
-      <MemoryRouter>
-        <ProjectCard project={project} onEdit={handleEdit} />
-      </MemoryRouter>
-    );
+    setup();
     expect(screen.getByRole('heading')).toHaveTextContent(project.name);
     // screen.debug(document);
     screen.getByText(/this is really difficult\.\.\./i);
@@ -40,13 +40,10 @@ describe('<ProjectCard />', () => {
   });
 
   it('handler called when edit clicked', async () => {
-    render(
-      <MemoryRouter>
-        <ProjectCard project={project} onEdit={handleEdit} />
-      </MemoryRouter>
-    );
+    setup();
     // this query works screen.getByText(/edit/i)
     // but using role is better
+    // eslint-disable-next-line testing-library/render-result-naming-convention
     const user = userEvent.setup();
     await user.click(screen.getByRole('button', { name: /edit/i }));
     expect(handleEdit).toBeCalledTimes(1);
